@@ -13,15 +13,16 @@ if (isset($_POST, $_POST['redirect'])) {
     exit;
 }
 
-if(isset($_POST, $_POST['location'], $_POST['decription'], $_POST['incident_cause'])){
+if(isset($_POST, $_POST['location'], $_POST['description'], $_POST['incident_cause'])){
     $location = $_POST['location'];
     $description = $_POST['description'];
     $incident_cause = $_POST['incident_cause'];
     $patientId = $_POST['patient_id']??null;
+    $user_id = $_SESSION['userInfo']['id'];
     $image = "";
     
     if(isset($_FILES['image'])){
-        $dir = "../uploads";
+        $dir = "../uploads/";
         if(!is_dir($dir)){
             mkdir($dir, 0777);
         }
@@ -45,13 +46,14 @@ if(isset($_POST, $_POST['location'], $_POST['decription'], $_POST['incident_caus
     }
 
     try {
-        $stmt = $conn->prepare("INSERT into fresponder_reports(location, incident_cause, description, image, patient_id) VALUES(:location, :incident_cause, :description, :image, :patient_id)");
+        $stmt = $conn->prepare("INSERT into fresponder_reports(location, incident_cause, description, image, patient_id, user_id) VALUES(:location, :incident_cause, :description, :image, :patient_id, :user_id)");
         $stmt->execute([
             'location' => $location,
             'incident_cause' => $incident_cause,
             'description' => $description, 
             'image' => $image,
             'patient_id' => $patientId,
+            'user_id' => $user_id,
         ]);
     } catch (Exception $e) {
         $_SESSION['error'] = $e;
@@ -100,9 +102,11 @@ $fid = $stmt->fetch();
                 $patientDetails = $stmt->fetch();
 
                 if ($stmt->rowCount() <= 0) {
+            flashMessages();
+
                 ?>
                     <div class="patient-form">
-                        <form method="POST" action="view-details.php">
+                        <form method="POST" action="view-details.php" enctype="multipart/form-data">
                             <input type="text" name="location" placeholder="Location" required><br>
                             <input type="text" name="incident_cause" placeholder="Incident Cause" required><br>
                             <textarea type="text" name="description" placeholder="Description" cols="55" rows="10" required></textarea><br>
@@ -112,6 +116,8 @@ $fid = $stmt->fetch();
                     </div>
                 <?php
                 } else {
+            flashMessages();
+
                 ?>
                     <div class="view-section">
                         <div class="patient-details">
@@ -129,24 +135,26 @@ $fid = $stmt->fetch();
                             <hr>
                             <div>
                                 <?php
-                                $stmt1 = $conn->query("SELECT * from doctor_reports ORDER BY created_at desc");
+                                $id = $patientDetails['id'];
+                                $stmt1 = $conn->query("SELECT * from doctor_reports WHERE patient_id=$id ORDER BY created_at desc");
                                 $stmt1->execute();
-                                $stmt1->fetch();
+                                $medicalDetails = $stmt1->fetch();
+                                // print_r($medicalDetails);
                                 ?>
                                 <h4>Medical History</h4>
-                                <p>Blood Group: <?=$stmt1['blood_group']?></p>
-                                <p>RBC Count: <?=$stmt1['rbc_count']?></p>
-                                <p>WBC Count: <?=$stmt1['wbc_count']?></p>
-                                <p>Allergies<br>
-                                    <span><?=$stmt1['allergies']?></span>
+                                <p><b>Blood Group</b>: <?=$medicalDetails['blood_group']??'N/A'?></p>
+                                <p><b>RBC Count</b>: <?=$medicalDetails['rbc_count']??'N/A'?></p>
+                                <p><b>WBC Count</b>: <?=$medicalDetails['wbc_count']??'N/A'?></p>
+                                <p><b>Allergies</b><br>
+                                    <span><?=$medicalDetails['allergies']??'N/A'?></span>
                                 </p>
-                                <p>Prescribed Medicines<br>
-                                    <span><?=$stmt1['prescribed_medicines']?></span>
+                                <p><b>Prescribed Medicines</b><br>
+                                    <span><?=$medicalDetails['prescribed_medicines']??'N/A'?></span>
                                 </p>
                             </div>
                         </div>
                         <div class="patient-form">
-                            <form method="POST" action="view-details.php">
+                            <form method="POST" action="view-details.php" enctype="multipart/form-data">
                                 <input type="hidden" name="patient_id" value="<?=$patientDetails['id']?>">
                                 <input type="text" name="location" placeholder="Location" required><br>
                                 <input type="text" name="incident_cause" placeholder="Incident Cause" required><br>

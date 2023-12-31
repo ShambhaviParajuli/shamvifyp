@@ -50,7 +50,7 @@ if (isset($_POST, $_POST['name'], $_POST['email'], $_POST['password'], $_POST['r
                     <input type="password" name="password" placeholder="Password" required><br>
                     <select name="role" required>
                         <option selected disabled>--Select role--</option>
-                        <option value="FRESPONDER">First Responder</option>
+                        <option value="FRESPONDER">Emergency Staff</option>
                         <option value="DOCTOR">Doctor</option>
                         <option value="RECEPTIONIST">Receptionist</option>
                     </select><br><br>

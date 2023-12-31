@@ -8,15 +8,17 @@
     <?php require "./header.php"; ?>
 </head>
 <?php
-if (isset($_POST, $_POST['fname'], $_POST['phone'], $_POST['dob'], $_POST['address'], $_POST['ephone'], $_POST['relation'], $_POST['gender'])) {
-    $fname = validate($_POST['fname']);
-    $phone = validate($_POST['phone']);
-    $dob = validate($_POST['dob']);
-    $address = validate($_POST['address']);
-    $email = validate($_POST['email']);
-    $ephone = validate($_POST['ephone']);
-    $relation = validate($_POST['relation']);
-    $gender = validate($_POST['gender']);
+if(isset($_POST) && @$_POST['fname']){
+// if (isset($_POST['fname'], $_POST['phone'], $_POST['dob'], $_POST['address'], $_POST['relation'], $_POST['gender'])) {
+    // echo "in";exit;
+    $fname = $_POST['fname'];
+    $phone = $_POST['phone']??null;
+    $dob = $_POST['dob']??null;
+    $address = $_POST['address']??null;
+    $email = $_POST['email']??null;
+    $ephone = $_POST['ephone']??null;
+    $relation = $_POST['relation']??null;
+    $gender = $_POST['gender']??null;
     $image = "";
 
     $phone_pattern = "/^9[0-9]{9}$/";
@@ -28,7 +30,7 @@ if (isset($_POST, $_POST['fname'], $_POST['phone'], $_POST['dob'], $_POST['addre
     }
 
     if (isset($_FILES['dp'])) { //If block to be commented out if any error occurs
-        $dir = "../uploads";
+        $dir = "../uploads/";
         if (!is_dir($dir)) {
             mkdir($dir, 0777);
         }
@@ -52,21 +54,21 @@ if (isset($_POST, $_POST['fname'], $_POST['phone'], $_POST['dob'], $_POST['addre
         $image =  $_FILES['dp']['name'];
     }
     else{
-        $image = "defUser.png";
+        $image = "defUser.jpeg";
     }
-    $stmt1 = $conn->prepare("UPDATE patient_details SET fname=:fname, phone=:phone, dob=:dob, address=:addr, email=:email, ephone=:ephone, relation=:relation, gender=:gender, dp=:image WHERE id=" . $_SESSION['id']);
-    $stmt1->execute([
-        'fname' => $fname,
-        'phone' => $phone,
-        'dob' => $dob,
-        'addr' => $address,
-        'email' => $email,
-        'ephone' => $ephone,
-        'relation' => $relation,
-        'gender' => $gender,
-        'dp' => $image, //Create an image column in the patient_details table || comment out if error occurs
-    ]);
+    try{
+    $stmt1 = $conn->prepare("UPDATE patient_details SET fname='$fname', address='$address', email='$email', phone='$phone', ephone='$ephone', relation='$relation', gender='$gender', dob='$dob', dp='$image' WHERE id=" . $_SESSION['id']);
+    $stmt1->execute();
     unset($_SESSION['id']);
+    header("location: index.php");
+    exit;
+    }catch(Exception $e){
+        echo $e;
+    }
+}
+else{
+    // debug($_POST);
+    // print_r($_POST);
 }
 
 if(isset($_POST, $_POST['redirect'])){
@@ -90,19 +92,19 @@ $emptyData = $stmt->fetch();
             <?php 
             if ($rowCount > 0) {
                 $_SESSION['id'] = $emptyData['id'];
-                echo "<script>alert('Continue?')</script>";
+                // echo "<script>alert('Continue?')</script>";
             ?>
             <div class="register-details">
                 <h3>Patient Form</h3>
                 <?=flashMessages()?>
-                <form method="POST" action="register.php">
-                    <input type="text" name="fname" placeholder="Full Name">
-                    <input type="text" name="address" placeholder="Address">
-                    <input type="number" name="phone" placeholder="Phone Number">
-                    <input type="email" name="email" placeholder="Email Address">
+                <form method="POST" action="register.php" enctype="multipart/form-data">
+                    <input type="text" name="fname" placeholder="Full Name" required>
+                    <input type="text" name="address" placeholder="Address" required>
+                    <input type="number" name="phone" placeholder="Phone Number" required>
+                    <input type="email" name="email" placeholder="Email Address" required>
                     <div class="two-columns">
-                        <input type="number" name="ephone" placeholder="Emergency Contact Number">
-                        <select name="relation">
+                        <input type="number" name="ephone" placeholder="Emergency Contact Number" required>
+                        <select name="relation" required>
                             <option disabled>--Relation--</option>
                             <option value="parents">Parents</option>
                             <option value="spouse">Spouse</option>
@@ -111,16 +113,16 @@ $emptyData = $stmt->fetch();
                         </select>
                     </div>
                     <div class="two-columns">
-                        <select name="gender">
+                        <select name="gender" required>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
                             <option value="others">Others</option>
                         </select>
                         
-                        DOB: <input type="date" name="date">
+                        DOB: <input type="date" name="date" required>
                     </div>
 
-                    <input class="image-upload" type="file" name="dp">
+                    <input class="image-upload" type="file" name="dp" required>
 
                     <button type="submit" class="display-block-center">Create New Patient</button>
                 </form>

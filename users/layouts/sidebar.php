@@ -4,7 +4,7 @@ function displaySidebar($links){
 <div class="sidebar-wrapper">
     <div class="dashboard-logo">
         <img src="../img/dashboad-logo.png" alt="not found">
-        <h2>FMBD</h2>
+        <h2>Saheli</h2>
     </div>
     <div class="dashboard-cta">
         <div class="links">

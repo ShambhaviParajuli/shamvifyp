@@ -7,7 +7,7 @@
 }
 
 button {
-  background-color: #2663a7;
+  background-color: #2b752a;
   width: 320px;
   height: 62px;
   color: white;
@@ -16,7 +16,7 @@ button {
 }
 
 button:hover {
-  background-color: #214b7a;
+  background-color: #2b752a;
   border-radius: 10px;
   color: lightgrey;
   cursor: pointer;
@@ -174,8 +174,34 @@ button:active {
 
 .details {
   position: fixed;
-  top: 18rem;
-  left: 32rem;
+  top: 19rem;
+  left: 38rem;
+}
+
+@media only screen and (max-width: 420px) {
+  .view-section {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .sidebar-wrapper {
+    height: 136vh !important;
+  }
+
+  .dashboard-logo img{
+    left: 1.2rem;
+  }
+
+  .links a img {
+    padding-left: 2rem;
+  }
+
+  .dashboard-cta .links a sup, .dashboard-cta a sup, .dashboard-logo h2 {
+    display: none;
+  }
+
+  .patient-details div .details {
+    left: 22rem;
+  }
 }
 
 /* Receptionist */
@@ -238,14 +264,14 @@ button:active {
   margin: 0 2.6rem !important;
 }
 
-.image-upload::-webkit-file-upload-button {
+/* .image-upload::-webkit-file-upload-button {
   visibility: hidden;
 }
 
 .image-upload::before {
   content: "Add Photo (Optional) +";
   cursor: pointer;
-}
+} */
 
 .fingerprint-registering {
   background-color: white;

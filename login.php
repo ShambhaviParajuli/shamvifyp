@@ -23,8 +23,8 @@
             <div class="form">
             <form method="POST" action="login-process.php">
                 <img class="logo" src="./img/logo.png">
-                <h2 class="title">FBMD</h2>
-                <p class="subtitle"><i>"Seconds <span style="color: #2663A7;">Save</span> <span style="color: #51A75E;">Lives</span>"</i></p>
+                <h2 class="title">Saheli</h2>
+                <p class="subtitle"><i>"Friend <span style="color: #2663A7;">For</span> <span style="color: #51A75E;">Emergency</span>"</i></p>
                 <h3>Login</h3>
                 <?=flashMessages()?>
                 <input type="email" placeholder="Email" name="email" required> 
@@ -35,10 +35,10 @@
                 <select name="role" required>
                     <option disabled>--Select user type--</option>
                     <option value="ADMIN">Admin</option>
-                    <option value="FRESPONDER">First Responder</option>
+                    <option value="FRESPONDER">Emergency Staff</option>
                     <option value="DOCTOR">Doctor</option>
                     <option value="RECEPTIONIST">Receptionist</option>
-                    <option value="PATIENT">Patient</option>
+                    
                 </select>
                 
                 <span class="forgot-password">Forgot Password?</span>

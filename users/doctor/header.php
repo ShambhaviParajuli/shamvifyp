@@ -1,8 +1,10 @@
 <?php
 require "../layouts/sidebar.php" ;
 require "../layouts/dashboard.php" ;
+require "../pdo.php";
+require "../utils.php";
 
-session_start();
+@session_start();
 
 if (!isset($_SESSION['userInfo']) || $_SESSION['userInfo']['role'] !== "DOCTOR") {
     $_SESSION['error'] = "[403] Access Denied!";

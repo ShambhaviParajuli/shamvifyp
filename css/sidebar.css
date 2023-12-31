@@ -5,7 +5,7 @@ body {
 .sidebar-wrapper {
   width: 15%;
   max-width: 15%;
-  background: #2663a7;
+  background: #2b752a ;
   border-radius: 0px 20px 20px 0px;
   height: 100vh;
   position: fixed;
@@ -28,7 +28,7 @@ a sup {
 }
 
 a:hover {
-  background-color: #214b7a;
+  background-color: #2b752a;
 }
 
 a:active {
